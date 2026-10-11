@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clonador de Voz — RVC</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div id="fileProtocolWarning" class="banner error hidden">
+  ⚠️ Estás abriendo el archivo directamente. Debes usar <b>http://127.0.0.1:5050</b> en el navegador para que funcione.
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-icon">🎙️</div>
+    <div>
+      <h1>Clonador de Voz</h1>
+      <p class="subtitle">RVC local · 3 pasos</p>
+    </div>
+    <div class="rvc-pill" id="rvcStatus"><span class="dot"></span> comprobando…</div>
+  </header>
+
+  <nav class="stepper">
+    <button class="step" data-step="1"><span class="step-num">1</span><span>Entrenar</span></button>
+    <div class="step-line"></div>
+    <button class="step" data-step="2"><span class="step-num">2</span><span>Clonar</span></button>
+    <div class="step-line"></div>
+    <button class="step" data-step="3"><span class="step-num">3</span><span>Descargar</span></button>
+  </nav>
+
+  <!-- PASO 1 -->
+  <section class="card" id="panel-1">
+    <h2>Paso 1 · Audios para entrenar la voz</h2>
+    <p class="hint">Sube uno o varios <b>.wav</b> / <b>.mp3</b> con la voz que quieres clonar. Cuanto más limpios (sin música ni ruido), mejor resultado.</p>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Nombre del modelo</label>
+        <input type="text" id="modelName" placeholder="ej: dani">
+      </div>
+      <div class="field small">
+        <label>Épocas</label>
+        <input type="number" id="epochs" value="20" min="5" max="500">
+      </div>
+    </div>
+
+    <div class="dropzone" id="dropzoneTrain">
+      <input type="file" id="trainFilesInput" multiple accept=".wav,.mp3,audio/wav,audio/mpeg" hidden>
+      <div class="dz-icon">⬆️</div>
+      <p><b>Arrastra tus audios aquí</b><br>o haz clic para elegirlos</p>
+    </div>
+    <ul id="trainFileList" class="filelist"></ul>
+
+    <button id="btnTrain" class="primary" disabled>🚀 Entrenar modelo</button>
+
+    <div class="models-folder-row">
+      <input type="file" id="importModelsInput" multiple hidden>
+      <button id="btnImportModels" class="ghost" type="button">📂 Elegir modelo(s) .pth ya entrenados</button>
+      <span class="hint-inline">Los modelos se guardan en la carpeta <code>modelos/</code> dentro de la app.</span>
+    </div>
+
+    <div id="trainProgress" class="progress-wrap hidden">
+      <div class="progress-det"><div class="bar-det" id="trainBar"></div></div>
+      <div class="progress-meta">
+        <span id="trainPercent">0%</span>
+        <span id="trainEta" class="eta">⏳ estimando tiempo…</span>
+      </div>
+    </div>
+    <pre id="trainLog" class="log hidden"></pre>
+  </section>
+
+  <!-- PASO 2 -->
+  <section class="card hidden" id="panel-2">
+    <h2>Paso 2 · Audio a clonar</h2>
+    <p class="hint">Elige el modelo entrenado y el audio que quieres convertir con esa voz.</p>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Modelo</label>
+        <select id="modelSelect"></select>
+      </div>
+      <div class="field small">
+        <label>Tono</label>
+        <input type="number" id="pitch" value="0" title="Semitonos, 0 = normal">
+      </div>
+      <div class="field small">
+        <label>Fidelidad timbre</label>
+        <input type="number" id="indexRate" value="0.6" min="0" max="1" step="0.05" title="0 = ignora el índice, 1 = máxima fidelidad al timbre original (puede sonar más artificial)">
+      </div>
+      <button id="btnRefreshModels" class="ghost" title="Actualizar lista">🔄</button>
+      <button id="btnDeleteModel" class="ghost" title="Borrar este modelo">🗑️</button>
+    </div>
+
+    <div class="dropzone" id="dropzoneConvert">
+      <input type="file" id="convertFileInput" accept=".wav,.mp3,audio/wav,audio/mpeg" hidden>
+      <div class="dz-icon">🎵</div>
+      <p><b>Arrastra el audio a clonar</b><br>o haz clic para elegirlo</p>
+    </div>
+    <p id="convertFileName" class="filename"></p>
+
+    <button id="btnConvert" class="primary" disabled>✨ Clonar audio</button>
+    <div id="convertProgress" class="progress-wrap hidden">
+      <div class="progress-det"><div class="bar-det" id="convertBar"></div></div>
+      <div class="progress-meta">
+        <span id="convertPercent">0%</span>
+        <span id="convertEta" class="eta">⏳ estimando tiempo…</span>
+      </div>
+    </div>
+    <pre id="convertLog" class="log hidden"></pre>
+  </section>
+
+  <!-- PASO 3 -->
+  <section class="card hidden" id="panel-3">
+    <h2>Paso 3 · Descargar resultado</h2>
+    <div id="resultBox" class="result-empty">Todavía no hay ningún audio clonado.</div>
+    <audio id="resultPlayer" class="hidden" controls></audio>
+    <button id="btnSaveAs" class="primary" disabled>💾 Elegir carpeta y guardar</button>
+    <a id="fallbackDownload" class="ghost-link hidden" download>⬇️ Descargar a la carpeta por defecto</a>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

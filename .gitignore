@@ -1,0 +1,18 @@
+# Entorno virtual de Python (cada uno crea el suyo con requirements.txt)
+venv/
+__pycache__/
+*.pyc
+
+# Modelos entrenados (pesan decenas de MB cada uno, no van en git)
+modelos/*.pth
+modelos/.papelera/
+
+# Audios y datos generados por el usuario
+data/
+
+# App empaquetada para macOS (tiene rutas absolutas de esta máquina)
+Clonador de Voz.app/
+
+# Sistema
+.DS_Store
+*.log
