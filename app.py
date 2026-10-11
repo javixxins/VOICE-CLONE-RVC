@@ -10,13 +10,16 @@ from pathlib import Path
 import requests
 from flask import Flask, jsonify, request, send_file, render_template
 
-RVC_URL = "http://localhost:7865"
-RVC_DIR = Path("/Users/franantartico/RVC-WebUI")
+# Rutas de entorno: configurables por variable de entorno (RVC_DIR, FFMPEG_PATH),
+# con los valores de esta máquina como predeterminados para que la app siga
+# funcionando igual que siempre sin tener que configurar nada.
+RVC_URL = os.environ.get("RVC_URL", "http://localhost:7865")
+RVC_DIR = Path(os.environ.get("RVC_DIR", "/Users/franantartico/RVC-WebUI"))
 RVC_PYTHON = RVC_DIR / "venv" / "bin" / "python"
 TRAIN_RUNNER = RVC_DIR / "rvc_train_runner.py"
 INFER_RUNNER = RVC_DIR / "rvc_infer_runner.py"
 WEIGHTS_DIR = RVC_DIR / "assets" / "weights"
-FFMPEG = "/Users/franantartico/pinokio/bin/miniconda/bin/ffmpeg"
+FFMPEG = os.environ.get("FFMPEG_PATH", "/Users/franantartico/pinokio/bin/miniconda/bin/ffmpeg")
 
 APP_DIR = Path(__file__).resolve().parent
 DATA_DIR = APP_DIR / "data"

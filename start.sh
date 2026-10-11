@@ -2,7 +2,7 @@
 # Arranca el servidor RVC (si no está ya corriendo) y luego la app de clonación de voz.
 cd "$(dirname "$0")"
 
-RVC_DIR="/Users/franantartico/RVC-WebUI"
+RVC_DIR="${RVC_DIR:-/Users/franantartico/RVC-WebUI}"
 
 if ! curl -s -o /dev/null -m 2 http://localhost:7865; then
   echo "Iniciando servidor RVC..."
